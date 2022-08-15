@@ -11,18 +11,17 @@ DATETIME_FORMAT = '%Y-%m-%d_%H-%M-%S'
 class PepParsePipeline:
     def open_spider(self, spider):
         self.results = defaultdict(int)
-        self.count = 0
 
     def process_item(self, item, spider):
         status = item['status']
         self.results[status] += 1
-        self.count += 1
         return item
 
     def close_spider(self, spider):
         result_list = [('Статус', 'Количество')]
         result_list.extend(self.results.items())
-        result_list.append(('Total', self.count))
+        count = sum(self.results.values())
+        result_list.append(('Total', count))
         results_dir = BASE_DIR / 'results'
         results_dir.mkdir(exist_ok=True)
         now = dt.datetime.now()
